@@ -14,7 +14,7 @@ library(tidyverse)
 ```{r db_connection, include=FALSE}
 # establish a connection to the database, here an existing database but we could
 # also create a new one from within R
-streamChem <- dbConnect(RSQLite::SQLite(), "~/Desktop/stream_chemistry.sqlite")
+streamChem <- dbConnect(RSQLite::SQLite(), "./stream_chemistry.sqlite")
 ```
 
 
@@ -125,7 +125,7 @@ VALUES (
 
 ```{r}
 # bring the sonde data from our 5th event into R
-sonde_data_5 <- read_csv('~/Dropbox (ASU)/development/RDM_databases_exercise/databases_data_upload/sonde_data_5.csv')
+sonde_data_5 <- read_csv('../data/sonde_data_5.csv')
 ```
 
 

@@ -1,8 +1,9 @@
 # library
 library(DBI)
+library(RSQLite)
 
 # set the database connection
-streamChem <- dbConnect(RSQLite::SQLite(), "~/Desktop/stream_chemistry.sqlite")
+streamChem <- dbConnect(RSQLite::SQLite(), "./stream_chemistry.sqlite")
 
 # query data
 dbGetQuery(streamChem, 'SELECT Date FROM sonde_data')
