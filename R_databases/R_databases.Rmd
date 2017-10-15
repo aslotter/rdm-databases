@@ -1,0 +1,142 @@
+---
+title: "R and databases (SQLite)"
+output: html_document
+---
+
+```{r libraries, include=FALSE}
+# load the required libraries, here DBI, RSQSLite, and tidyverse
+library(DBI)
+library(RSQLite)
+library(tidyverse)
+```
+
+
+```{r db_connection, include=FALSE}
+# establish a connection to the database, here an existing database but we could
+# also create a new one from within R
+streamChem <- dbConnect(RSQLite::SQLite(), "./stream_chemistry.sqlite")
+```
+
+
+```{r list_tables, include=FALSE}
+# list all of the tables in our database
+dbListTables(streamChem)
+```
+
+
+```{sql, connection=streamChem}
+
+-- from our in-class database exercise:
+
+-- We can group results based on data features that can be binned, 
+-- this is particularly useful for aggregate functions. The query 
+-- below extracts the minimum and maximum dissolved oxygen (DO) 
+-- values for each sonde_event.
+SELECT
+  sonde_event_id,
+  MIN(DO) AS min_DO,
+  MAX(DO) AS max_DO
+FROM sonde_data 
+GROUP BY sonde_event_id;
+```
+
+
+### we can pass R values to our query
+
+```{r create_variable}
+thirdEvent <- 3
+```
+
+
+```{sql, connection=streamChem}
+SELECT
+  sonde_event_id,
+  MIN(DO) AS min_DO,
+  MAX(DO) AS max_DO
+FROM sonde_data
+WHERE sonde_event_id = ?thirdEvent
+GROUP BY sonde_event_id;
+```
+
+
+## revisit the assignment in R
+
+### run the SQL query you generated for the assignment in R; simply SQL that is run in R
+
+```{sql connection = streamChem}
+SELECT
+  sonde_events.id,
+  sonde_events.site_id AS sampleStream,
+  sonde_events.site_id AS sampleStream,
+  ROUND(AVG(atm_pressure.BP),1) AS averagePressure
+FROM atm_pressure
+JOIN sonde_events ON (sonde_events.id = atm_pressure.sonde_event_id)
+GROUP BY sonde_events.id;
+```
+
+
+### or pull the data in to R and use R to generate the desired output
+
+```{sql connection = streamChem, output.var = "atm_pressure"}
+-- create a data frame of the atmospheric pressure data
+SELECT *
+FROM atm_pressure;
+```
+
+
+```{sql connection = streamChem, output.var = "sonde_events"}
+-- create a data frame of the sonde events data
+SELECT *
+FROM sonde_events;
+```
+
+
+```{r}
+# group the atmospheric data by the sonde_event_id, calculate the average, then
+# join to the sonde events data to retrieve the site_id, just as we had done
+# with SQL but here with R
+atm_pressure %>% 
+  group_by(sonde_event_id) %>% 
+  summarise(averagePressure = round(mean(BP),1)) %>% 
+  ungroup() %>% 
+  inner_join(sonde_events, by = c("sonde_event_id" = "id")) %>% 
+  select(id = sonde_event_id, sampleStream = site_id, averagePressure)
+```
+
+# add data to our database
+
+
+```{sql connection=streamChem}
+-- update our sonde_events table with a new event
+INSERT INTO sonde_events (
+  site_id, 
+  date, 
+  instrument_id, 
+  K2_20
+)
+VALUES (
+  "HWC", 
+  "2003-10-10", 
+  "blue",
+  50.68
+);
+```
+
+
+```{r}
+# bring the sonde data from our 5th event into R
+sonde_data_5 <- read_csv('../data/sonde_data_5.csv')
+```
+
+
+```{r}
+# write the fifth event data to the database
+dbWriteTable(streamChem, "sonde_data", sonde_data_5, append = TRUE)
+```
+
+
+--DELETE FROM sonde_events where id = 5;
+--UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM sonde_events) WHERE name="sonde_events";
+
+--DELETE FROM sonde_data where sonde_event_id = 5;
+--UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM sonde_data) WHERE name="sonde_data";
