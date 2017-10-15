@@ -18,13 +18,25 @@
 .small-code pre code {
   font-size: 0.9em;
 }
-</style>
+.column-left{
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+.column-right{
+  float: right;
+  width: 50%;
+  text-align: right;
+}</style>
 
 databases
 ========================================================
 author: 
 autosize: true
 font-family: 'Arial'
+width: 1920
+height: 1080
+
 
 terminology
 ========================================================
@@ -87,7 +99,21 @@ Structure
 title: false
 
 table structure
-<p style="font-size:0.5em; color:grey;"><img src="./images/tableStructure.png" style="margin-bottom=10px"><br>attribution: introduction to data science: BIO 260 and CSCI E107 Harvard T.H. Chan School of Public Health</p>
+<p style="font-size:0.5em; color:grey;"><img src="./images/tableStructure.png" width=100% style="margin-bottom=10px"><br>attribution: introduction to data science: BIO 260 and CSCI E107 Harvard T.H. Chan School of Public Health</p>
 ***
 database structure (schema)
-<p style="font-size:0.5em; color:grey;"><img src="./images/entity-relationship-diagram.png" style="margin-bottom=10px"><br>attribution: Hand-crafted relational databases for fun and science, Naupaka Zimmerman, Data Carpentry, 2016-12-05</p>
+<p style="font-size:0.5em; color:grey;"><img src="./images/entity-relationship-diagram.png" width=100% style="margin-bottom=10px"><br>attribution: Hand-crafted relational databases for fun and science, Naupaka Zimmerman, Data Carpentry, 2016-12-05</p>
+
+Structure
+========================================================
+title: false
+
+<div class="column-left">
+  table structure
+  <p style="font-size:0.5em; color:grey><img src="./images/tableStructure.png" width=100% style="margin-bottom=10px"><br>attribution: introduction to data science: BIO 260 and CSCI E107 Harvard T.H. Chan School of Public Health</p>
+</div>
+
+<div class="column-right">
+  database structure (schema)
+  <p style="font-size:0.5em; color:grey; text-align: left"><img src="./images/entity-relationship-diagram.png" width=100% style="margin-bottom=10px"><br>attribution: Hand-crafted relational databases for fun and science, Naupaka Zimmerman, Data Carpentry, 2016-12-05</p>
+</div>
