@@ -1,0 +1,167 @@
+introduction to databases
+-------------------------
+
+### background
+
+We will create a database to house stream chemistry data (temperature,
+specific conductance, dissolved oxygen) collected using data-logging
+sensors called sondes. These data were collected from two different
+locations on three different days using four different instruments. We
+will use one table (sonde\_data) to store the sensor data, and another
+(sonde\_events) to store data and metadata about each sampling event.
+Note that K2\_20 is an empirically measured estimate of gas exchange
+across the air-water interface that is needed for some analyses commonly
+addressed with this type of data.
+
+### create the tables
+
+Use the SQLite import tool to create the sonde\_events table, and import
+the data.
+
+Creating the sonde\_data table is more complicated because we need to
+add a FOREIGN KEY that references the sonde\_events table. The import
+tool does not support creating FOREIGN KEYs so we will need to do this
+with an SQL statement:
+
+Before creating this table, change the *Foreign Keys* option in *DB
+Settings* to On: (1) set to On, (2) click *change*.
+
+    CREATE TABLE "sonde_data" (
+      "id" INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL ,
+      "sonde_event_id" INTEGER NOT NULL ,
+      "Date" DATETIME,
+      "Time" DATETIME,
+      "Temp" DOUBLE,
+      "SpCond" DOUBLE,
+      "DO" DOUBLE,
+      FOREIGN KEY ("sonde_event_id") REFERENCES sonde_events("id")
+    );
+
+### load data into the database
+
+The sonde data are in two different files: *sonde\_data\_1\_3.csv* has
+data for sonde events 1 through 3, and *sonde\_data\_4.csv* contains the
+data for event 4. Load these data into the sonde\_data table using the
+import tool in two steps. Note the empty *id* column in these files.
+Unlike the sonde\_events table where we are assigning the id value used
+as the primary key, here we will let SQLite populate the
+auto-incrementing *id* field.
+
+Our FOREIGN KEY references the id field in our sonde\_events table. Try
+uploading *sonde\_data\_5.csv*, which is a fifth sampling event but one
+that is not included in our sonde\_events table.
+
+### getting data out of the database
+
+We use **SELECT** statements to extract data from the tables. An
+asterisk is a wild card that instructs the query to pull data from all
+columns.
+
+    SELECT * FROM sonde_data;
+
+Or we can extract specific columns:
+
+    SELECT Date FROM sonde_data;
+
+Ususally we want to use certain search criteria:
+
+    SELECT
+      Date,
+      DO
+    FROM sonde_data 
+    WHERE strftime('%m', Date) = '08' AND strftime('%d', Date) = '15';
+
+We can group results based on data features that can be binned, this is
+particularly useful for aggregate functions. The query below extracts
+the minimum and maximum dissolved oxygen (DO) values for each
+sonde\_event.
+
+    SELECT
+      sonde_event_id,
+      MIN(DO) AS min_DO,
+      MAX(DO) AS max_DO
+    FROM sonde_data 
+    GROUP BY sonde_event_id;
+
+The ability to link information in our tables is a core features of
+databases. We do this with **JOINs**.
+
+For example, incorporate site\_id from the sonde\_events table into a
+query of temperature and dissolved oxygen from sonde\_data:
+
+    SELECT
+      sonde_events.site_id,
+      sonde_data.Temp,
+      sonde_data.DO
+    FROM sonde_data 
+    JOIN sonde_events ON (sonde_events.id = sonde_data.sonde_event_id)
+    WHERE sonde_events.id = 1;
+
+For example, find the minimum and maximum dissolved oxgyen values for
+each sonde\_event as per above but this time include the site and the
+K2\_20 from the sonde\_events table:
+
+    SELECT
+      sonde_events.id,
+      sonde_events.site_id,
+      MIN(sonde_data.DO) AS min_DO,
+      MAX(sonde_data.DO) AS max_DO,
+      sonde_events.K2_20
+    FROM sonde_data 
+    JOIN sonde_events ON (sonde_events.id = sonde_data.sonde_event_id)
+    GROUP BY sonde_events.id;
+
+assignment
+----------
+
+Barometric pressure has a considerable influence on dissolved oxygen
+concentrations in aquatic systems. We will need these data for our
+analyses.
+
+-   create a table in your database to house barometric pressure data
+    corresponding to each sonde event. Note that the date and time are
+    in a single column in this file, and that BP is barometric pressure.
+-   populate the table with data in the atm\_pressure.csv file. The
+    table should include these features:
+    -   an auto-incrementing primary key
+    -   an appropriate data type for each field
+    -   a foreign key in which the sonde\_event\_id field of your new
+        tables references the id field of the sonde\_events table
+-   produce a summary table detailing the sampling site and *average*
+    barometric pressue for each sonde event. See
+    [here](https://www.sqlite.org/lang_aggfunc.html) for details about
+    aggregating functions in SQLite.
+
+Your submission should include the following components:
+
+1.  in a single text file (not a Word doc, please):
+    -   create table statement generating a table to house the
+        barometric pressure data
+    -   select statement that yields the sampling site and *average*
+        barometric pressue for each sonde event
+
+2.  the output of your select statement as a csv file
+
+**Bonus submission:**
+
+If you want to take it a bit further, generate a query that will produce
+the minium and maximum dissolved oxygen values, and the average
+barometric pressure for each sonde event. Hint: this requires a join on
+a select statement. The structure looks something like this:
+
+    SELECT
+      tbl1.field1,
+      tbl1.field2,
+      subquery.field1
+    FROM tbl1
+    JOIN (
+      SELECT 
+        tbl2.field1,
+        tbl2.field2
+      FROM tbl2
+      GROUP BY tbl2.groupingvar
+    ) AS subquery ON (subquery.some_id = tbl1.some_id)
+    GROUP BY tbl1.groupingvar;
+
+**logistics**: submit the required materials to your forked GitHub
+resository for this assignment (via invitation) by 2017-02-27 17:00.
