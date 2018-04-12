@@ -18,7 +18,7 @@ database.
 
 ### create the database
 
-Creata a new database titled 'stream-metabolism'. Upon creating the database,
+Creata a new database titled _stream-metabolism_. Upon creating the database,
 DB Browser will start with a _Edit table definition_ dialog box. Cancel this
 for now.
 
@@ -62,6 +62,8 @@ the play button to execute the command.
 The sonde data are in four different files: sonde\_data\_1\_3.csv has data for
 sonde events 1 through 3; sonde\_data\_4.csv contains the data for event 4; and
 sonde\_data\_5.csv contains the data for event 5.
+
+file formatting: ```sonde_data_1_3.csv``` better?
 
 Note the empty **id** column in these files. Unlike the sonde\_events table where
 we are assigning the id value used as the primary key, here we will let SQLite
@@ -110,11 +112,12 @@ FROM sonde_data;
 Or we can extract specific columns:
 
 ```sql 
-SELECT Date 
+SELECT 
+  Date 
 FROM sonde_data;
 ```
 
-Ususally we want to use certain search criteria:
+Usually we want to use certain search criteria:
 
 ```sql 
 SELECT
