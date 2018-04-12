@@ -13,7 +13,7 @@ empirically measured estimate of gas exchange across the air-water interface
 that is needed for some analyses commonly addressed with this type of data.
 
 We will use SQLite as our database platform, and [DB Browser for
-SQLite](http://sqlitebrowser.org/){:target="\_blank"} as a GUI interface to our
+SQLite](http://sqlitebrowser.org/) as a GUI interface to our
 database.
 
 ### create the database
@@ -30,15 +30,15 @@ other settings.
 ### create the tables
 
 Use the DB Browser import tool to create the sonde\_events table by importing
-the data: **File** > **Import** > ***Table from CSV file...*** Navigate to the
-sonde\_events.csv file and hit _Open_. You should see the file contents in the
+the data: **File** > **Import** > **Table from CSV file...** Navigate to the
+```sonde_events.csv``` file and hit _Open_. You should see the file contents in the
 _Import CSV file_ dialog box; name the table 'sonde\_events'. Once created, use
 the _Modify Table_ tool to change (1) the id field to Type INTEGER, and check the
 Not null, PK (primary key), AI (autoincrement), and U (unique) option boxes,
 and (2) the K2\_20 field to Type NUMERIC.
 
 Creating the sonde\_data table is more complicated because we need to add a
-FOREIGN KEY that references the sonde\_events table. The import tool does not
+FOREIGN KEY that references the _sonde\_events_ table. The import tool does not
 support creating FOREIGN KEYs so we will need to do this with an SQL statement:
 
 ```sql
@@ -95,6 +95,8 @@ Now we can delete our _tempTable_.
 Our FOREIGN KEY references the id field in our sonde\_events table. Try
 uploading ```sonde_data_5.csv```, which is a fifth sampling event but one that is
 not included in our sonde\_events table, using the aforementioned steps.
+
+Add a fifth event to the _sonde\_events_ table and try again.
 
 ### getting data out of the database
 
