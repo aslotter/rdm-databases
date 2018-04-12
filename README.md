@@ -59,11 +59,9 @@ the play button to execute the command.
 
 ### load data into the database
 
-The sonde data are in four different files: sonde\_data\_1\_3.csv has data for
-sonde events 1 through 3; sonde\_data\_4.csv contains the data for event 4; and
-sonde\_data\_5.csv contains the data for event 5.
-
-file formatting: ```sonde_data_1_3.csv``` better?
+The sonde data are in four different files: ```sonde_data_1_3.csv``` has data for
+sonde events 1 through 3; ```sonde_data_4.csv``` contains the data for event 4; and
+```sonde_data_5.csv``` contains the data for event 5.
 
 Note the empty **id** column in these files. Unlike the sonde\_events table where
 we are assigning the id value used as the primary key, here we will let SQLite
@@ -73,10 +71,10 @@ The **id** field of our _sonde\_data_ table is of type integer but this column
 is empty in our sonde data files, which will result in an error if we try to
 import the data files directly into the _sonde\_data_ table. To get around this
 limitation, we need to import each sonde data file into a temporary table then
-copy (INSERT) the data into the _sonde\_events\_table.
+copy (INSERT) the data into the _sonde\_events_ table.
 
-Import sonde\_data\_1\_3.csv using the import tool. Name the table _tempTable_.
-Repeat this step for sonde\_data\_4.csv using the same table name (_tempTable_)
+Import ```sonde_data_1_3.csv``` using the import tool. Name the table _tempTable_.
+Repeat this step for ```sonde_data_4.csv``` using the same table name (_tempTable_)
 \- DB Browser will indicate that this table already exists and prompt you as to
 whether you want to import the data into the existing table: Yes. Data for
 sonde events 1-4 should now be in our database table titled _temporary_; you
@@ -95,7 +93,7 @@ sonde_event_id, Date, Time, Temp, SpCond, DO FROM tempTable;
 Now we can delete our _tempTable_.
 
 Our FOREIGN KEY references the id field in our sonde\_events table. Try
-uploading sonde\_data\_5.csv, which is a fifth sampling event but one that is
+uploading ```sonde_data_5.csv```, which is a fifth sampling event but one that is
 not included in our sonde\_events table, using the aforementioned steps.
 
 ### getting data out of the database
