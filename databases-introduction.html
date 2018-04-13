@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>databases</title>
+    <meta charset="utf-8">
+    <meta name="date" content="2018-04-13" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# databases
+### 2018-04-13
+
+---
+
+
+
+
+#### introduction to databases
+
+1. a practical introduction to databases
+1. demystify databases
+1. data structure 
+
+---
+
+#### terminology
+
+- database (DB) is an organized collection of data
+- database management system (DBMS) is a software that allows interacting with the database (e.g., storing, retrieving, updating data)
+
+.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+
+---
+
+#### relational database
+
+- many types and flavors of databases: document, key-value
+- relational model (RM):
+  + built on relational algebra, a combination of:
+      - selections ( WHERE ... )
+      - projections ( SELECT ... )
+      - Cartesian products ( JOIN ... )
+      - and more
+- RDBMS = DBMS + RM
+- SQL (Structured Query Language): language designed to interact with RDBMS
+
+.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+
+
+
+---
+
+#### RDBMS software solutions
+
+- commercial
+  + Oracle
+  + Microsoft SQL Server
+  + ...
+- open-source
+  + MySQL
+  + PostgreSQL
+  + SQLite
+  + ...
+  
+.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+
+---
+
+#### SQLite
+  
+- SQLite is the easiest way to start: unlike most others, it is not a client-server DB. The whole DB can live in a (portable) folder. All the required tools are included in dplyr.
+- light but still powerful. It barely requires configuration but can still store and process large amounts of data. It is used in most web browsers and mail clients.
+
+.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+
+---
+
+#### database table structure
+
+&lt;br&gt;
+.center[
+  ![tr_PP](images/tableStructure.png)
+]
+
+.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+
+---
+
+#### database structure (schema)
+
+.center[
+  &lt;img src="images/entity-relationship-diagram.png" width="90%"&gt;
+]
+
+.footnote[Hand-crafted relational databases for fun and science, Naupaka Zimmerman, Data Carpentry, 2016-12-05]
+
+---
+
+#### why use a RDBMS?
+
+- data size, typically when the data fits on drive but not in memory
+- one DB vs (too) many CSV files - **complexity!**
+- harness the power of SQL
+- data already live in a DB
+- DB provides extra tools, for example a GIS toolbox to deal with spatial data
+
+
+.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+
+---
+
+#### Tres Rios Wetlands
+
+.center[
+  &lt;img src="images/tres-rios-site-mao.png" width="45%"&gt;
+]
+
+---
+
+#### Tres Rios raw data
+
+&lt;small&gt;primary production&lt;/small&gt;
+![tr_plants](images/tr_plants.png)
+
+&lt;hr&gt;
+&lt;small&gt;transpiration&lt;/small&gt;
+![tr_PP](images/tr_primary_pro.png)
+
+&lt;hr&gt;
+&lt;small&gt;water quality&lt;/small&gt;
+![tr_water_qual](images/tr_water_qual.png)
+
+---
+
+#### Tres Rios database schema
+
+.center[
+  &lt;img src="images/tres_rios_db_structure.png" width="90%"&gt;
+]
+
+---
+
+#### Tres Rios database schema: water quality
+
+.center[
+  ![tres_rios_db_structure](images/simple_tres_rios_db_structure-water-quality.png)
+]
+
+---
+
+#### McDowell Sonoran Preserve arthropod taxonomy
+
+.center[
+  ![tres_rios_db_structure](images/arthropod-taxonomy.png)
+]
+
+---
+
+#### Sycamore Creek
+
+.center[
+  ![tres_rios_db_structure](images/sycamore-creek-bkgd.png)
+]
+
+---
+
+#### sample sonde data
+
+.center[
+  &lt;img src="images/example-sonde-data.png" width="70%"&gt;
+]
+
+---
+
+#### Sycamore Creek: sonde data
+
+.center[
+  ![tres_rios_db_structure](images/sycamore-creek-sonde-data.png)
+]
+
+---
+
+#### Sycamore Creek: many variables
+
+.center[
+  ![tres_rios_db_structure](images/sycamore-creek-multivariate.png)
+]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
