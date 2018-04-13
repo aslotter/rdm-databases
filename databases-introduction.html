@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>databases</title>
+    <title>an introduction to databases</title>
     <meta charset="utf-8">
     <meta name="date" content="2018-04-13" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
@@ -11,7 +11,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# databases
+# an introduction to databases
 ### 2018-04-13
 
 ---
@@ -19,38 +19,47 @@ class: center, middle, inverse, title-slide
 
 
 
-#### introduction to databases
+#### objectives
 
-1. a practical introduction to databases
-1. demystify databases
-1. data structure 
+&lt; 1. a practical introduction to databases
+
+&lt; 1. demystify databases
+
+~ 1. data structure 
 
 ---
 
-#### terminology
+#### terminology: what is a database?
 
 - database (DB) is an organized collection of data
-- database management system (DBMS) is a software that allows interacting with the database (e.g., storing, retrieving, updating data)
+
+- database management system (DBMS) is software that allows interacting with the database (e.g., storing, retrieving, updating data)
 
 .footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
 
 ---
 
-#### relational database
+#### terminology: relational database
 
 - many types and flavors of databases: document, key-value
-- relational model (RM):
-  + built on relational algebra, a combination of:
-      - selections ( WHERE ... )
-      - projections ( SELECT ... )
-      - Cartesian products ( JOIN ... )
-      - and more
-- RDBMS = DBMS + RM
-- SQL (Structured Query Language): language designed to interact with RDBMS
+
+- relational (from relational algebra)
+
+- RDBMS = R + DBMS
 
 .footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
 
+---
 
+#### terminology: the language of databases
+
+- SQL (Structured Query Language): language designed to interact with RDBMS
+
+.center[
+![sql](images/SQL-CASE-WHEN-2.png)
+]
+
+.footnote[http://razorsql.com]
 
 ---
 
@@ -72,8 +81,15 @@ class: center, middle, inverse, title-slide
 
 #### SQLite
   
-- SQLite is the easiest way to start: unlike most others, it is not a client-server DB. The whole DB can live in a (portable) folder. All the required tools are included in dplyr.
-- light but still powerful. It barely requires configuration but can still store and process large amounts of data. It is used in most web browsers and mail clients.
+- file-based, not client-server DB - the whole DB can live in a folder
+
+- requires little configuration
+
+- light but still powerful - can store and process large amounts of data
+
+- used in most web browsers and mail clients
+
+- all the required tools are included in dplyr
 
 .footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
 
@@ -103,14 +119,49 @@ class: center, middle, inverse, title-slide
 #### why use a RDBMS?
 
 - data size, typically when the data fits on drive but not in memory
+
 - one DB vs (too) many CSV files - **complexity!**
+
 - harness the power of SQL
+
 - data already live in a DB
+
 - DB provides extra tools, for example a GIS toolbox to deal with spatial data
 
 
 .footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
 
+---
+
+#### Sycamore Creek
+
+.center[
+  ![tres_rios_db_structure](images/sycamore-creek-bkgd.png)
+]
+
+---
+
+#### sample sonde data
+
+.center[
+  &lt;img src="images/example-sonde-data.png" width="70%"&gt;
+]
+
+---
+
+#### Sycamore Creek: sonde data
+
+.center[
+  ![tres_rios_db_structure](images/sycamore-creek-sonde-data.png)
+]
+
+---
+
+#### Sycamore Creek: many variables
+
+.center[
+  ![tres_rios_db_structure](images/sycamore-creek-multivariate.png)
+]
 ---
 
 #### Tres Rios Wetlands
@@ -156,38 +207,6 @@ class: center, middle, inverse, title-slide
 
 .center[
   ![tres_rios_db_structure](images/arthropod-taxonomy.png)
-]
-
----
-
-#### Sycamore Creek
-
-.center[
-  ![tres_rios_db_structure](images/sycamore-creek-bkgd.png)
-]
-
----
-
-#### sample sonde data
-
-.center[
-  &lt;img src="images/example-sonde-data.png" width="70%"&gt;
-]
-
----
-
-#### Sycamore Creek: sonde data
-
-.center[
-  ![tres_rios_db_structure](images/sycamore-creek-sonde-data.png)
-]
-
----
-
-#### Sycamore Creek: many variables
-
-.center[
-  ![tres_rios_db_structure](images/sycamore-creek-multivariate.png)
 ]
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
