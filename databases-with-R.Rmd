@@ -1,0 +1,377 @@
+---
+title: "introduction to databases (but with R)"
+output: github_document
+editor_options:
+  chunk_output_type: console
+---
+
+## background
+
+This document generally mirrors the SOS 598 RDM [introduction to databases](https://github.com/SOS598-RDM/rdm-databases) resource but adapts the workflow to R. Please see the aforementioned document for background and details.
+
+## load required libraries
+
+```{r libaries, results='hide', message=FALSE}
+
+library(dplyr)
+library(dbplyr)
+library(lubridate)
+library(readr)
+library(RSQLite)
+```
+
+## create a database and connect to it
+
+we can create a new database from within R:
+
+```{r create_DB}
+
+src_sqlite("~/Desktop/stream-metabolism-R.sqlite",
+           create = TRUE)
+```
+
+connect to our database:
+
+```{r DB connect_DB, results='hide'}
+
+con <- DBI::dbConnect(RSQLite::SQLite(),
+                      "~/Desktop/stream-metabolism-R.sqlite")
+
+# instruct our SQLite database to enforce foreign keys:
+dbExecute(con, 'PRAGMA foreign_keys = ON;')
+```
+
+## add database structure and data
+
+#### sonde events
+
+With DB Browser, we were able to use an import wizard to create the *sonde_events* table and import the data in a single action, with a subsequent step of adding the NOT NULL, PRIMARY KEY, and AUTOINCREMENT characteristics to the 'id' field of our table with DB Browser's modify table tool. However, functionality for modifying tables after they are created is limited with SQLite, particularly outside of a GUI environment like DB Browser. A better approach, and one that we need to use with R, is to set these features when the table is created. So, instead of a creating the table by importing them, we will pass an SQL statement to create the table with the appropriate characteristics, then insert the data with a separate SQL statement. We can use the dbWriteTable function to crudely but quickly load the sonde event data into a temporary table, then insert them from the temporary table to the *sonde_events table* with the appropriate formatting and structure.
+
+create our sonde events table
+
+```{r dbi::create_sonde_events_table, results='hide'}
+
+dbExecute(con,'
+CREATE TABLE `sonde_events` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`site_id`	TEXT,
+	`date`	TEXT,
+	`instrument_id`	TEXT,
+	`K2_20`	REAL);')
+```
+
+add sonde events data
+
+```{r dbi::load_sonde_events, results='hide'}
+
+# load data; SQLite does not have a type DATE so convert to character
+sondeEvents <- read_csv('~/localRepos/databases/data/sonde_events.csv') %>% 
+  mutate(date = as.character(date))
+
+# write the events to a temporary table
+DBI::dbWriteTable(conn = con, 
+                  name = "tempTable",
+                  value = sondeEvents,
+                  row.names = FALSE,
+                  temporary = FALSE,
+                  overwrite = TRUE,
+                  append = FALSE) 
+
+
+# insert data from the temporary table to sonde_events
+dbExecute(con, '
+INSERT INTO sonde_events(
+  site_id,
+  date,
+  instrument_id,
+  K2_20)
+SELECT
+  site_id,
+  date,
+  instrument_id,
+  K2_20
+FROM tempTable;')
+
+# delete the temporary table
+dbExecute(con, '
+DROP TABLE tempTable;')
+```
+
+#### sonde data
+
+create our sonde data table:
+
+```{r dbi::create_sonde_data_table, results='hide'}
+
+dbExecute(con,'
+CREATE TABLE "sonde_data" (
+  "id" INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL,
+  "sonde_event_id" INTEGER NOT NULL,
+  "Date" TEXT,
+  "Time" TEXT,
+  "Temp" DOUBLE,
+  "SpCond" DOUBLE,
+  "DO" DOUBLE,
+FOREIGN KEY ("sonde_event_id") REFERENCES sonde_events("id"));')
+```
+
+We need to add the sonde data to our database. However, because we are now in a scripting environment, we can develop tools and approaches to automate some of these processes. For example, we can start with a function that will add data to our sonde data table. This function adds data specifically to the *sonde_data* table but we could add a parameter that would allow us to select any table.
+
+```{r read_insert_helper_function}
+
+tempTableData <- function(dataFile, overWrite) {
+  
+  # set append argument to dbWriteTable based on user input ~ overwrite
+  if(overWrite == FALSE) { 
+    setAppend = TRUE } else {
+      setAppend = FALSE
+    }
+  
+  # read that data file
+  dataFile <- read_csv(dataFile) %>% 
+    mutate(
+      Date = as.character(Date),
+      Time = as.character(Time)
+    )
+  
+  # write specified data to tempTable
+  DBI::dbWriteTable(conn = con, 
+                    name = "tempTable",
+                    value = dataFile,
+                    row.names = FALSE,
+                    temporary = FALSE,
+                    overwrite = overWrite,
+                    append = setAppend) 
+}
+```
+
+use the script to load sonde event data 1 through 4:
+
+```{r dbi::load_sonde_data_1_4}
+
+# list data resources to load
+dataFiles <- list('~/localRepos/databases/data/sonde_data_1_3.csv',
+                  '~/localRepos/databases/data/sonde_data_4.csv')
+
+# use the tempTableData function to load the data
+lapply(dataFiles, tempTableData, overWrite = FALSE)
+```
+
+insert the data into the sonde_data table by selecting the data inserted into the temporary table:
+
+```{r dbi::insert_sonde_data}
+
+dbExecute(con, '
+          INSERT INTO sonde_data(
+            sonde_event_id,
+            Date,
+            Time,
+            Temp,
+            SpCond,
+            DO) 
+          SELECT
+            sonde_event_id, 
+            Date, 
+            Time, 
+            Temp, 
+            SpCond,
+            DO 
+          FROM tempTable;')
+```
+
+Since there is not a sonde event 5 in our *sonde_events* table, we need to add it before we can load event 5 data into the sonde_data table.
+
+```{r add_sonde_event_five}
+
+dbExecute(con,'
+INSERT INTO sonde_events(
+  site_id,  
+  date,
+  instrument_id,
+  K2_20)
+VALUES(
+  "HN",
+  "2013-08-13",
+  "yellow",
+  55.42
+);')
+```
+
+Now that there is an event 5 in our *sonde_events* table, we can add data from sonde event 5 to our *sonde_data* table. This chunk will load the event 5 sonde data into our temporary table.
+
+```{r dbi::load_sonde_data_5}
+
+dataFiles <- list('~/localRepos/databases/data/sonde_data_5.csv')
+
+lapply(dataFiles, tempTableData, overWrite = TRUE)
+```
+
+I can then insert the data into the sonde_data table from the temporary table simply by referencing the chunk that we employed earlier for this purpose.
+
+> {r dbi::insert_sonde_data_5, ref.label='dbi::insert_sonde_data'}
+
+```{r dbi::insert_sonde_data_5, ref.label='dbi::insert_sonde_data'}
+
+```
+
+## extract data from the database
+
+There are several approaches that we can employ to access data in our database. One is to use SQL statements as we have done to create and populate our database. Another is to use dplyr/dbplyr functionality so that we can access the data using dplyr syntax, which it will convert to SQL for us.
+
+get the first ten rows from the *sonde_data* table with SQL:
+
+```{r sonde_data_head}
+dbGetQuery(con, '
+SELECT *
+FROM sonde_data
+LIMIT 10;')
+```
+
+We can assign the results of that query as an object in our R environment.
+
+```{r sonde_data_head_assignment}
+sonde_data_top <- dbGetQuery(con, '
+SELECT *
+FROM sonde_data
+LIMIT 10;')
+```
+
+with dplyr:
+
+create a pointer to the *sonde_events* table in our database
+
+```{r sonde_events_db}
+
+event_db <- tbl(con, "sonde_events")
+```
+
+we can then access the information in the *sonde_events* table by referencing the pointer
+
+use the show_query() function to transate the dplyr statement to SQL
+
+```{r sonde_events_select_show_query}
+
+event_db %>% 
+  select(everything()) %>% 
+  show_query()
+```
+
+example: select all data from the *sonde_events* table
+
+```{r sonde_events_select_all}
+
+event_db %>%
+  select(everything())
+```
+
+example: assign results of select all data from the *sonde_events* table to an object in our R environment
+
+```{r sonde_events_select_all_assignment}
+
+sondeevent <- event_db %>%
+  select(everything()) %>%
+  collect()
+```
+
+Usually we want to use certain search criteria. Note the difference between the SQL and dplyr syntax to harvest the Date and DO fields from the *sonde_data* table that were collected on the 15th of August.
+
+*SQL*
+
+```{r select_SQL}
+
+dbGetQuery(con,"
+SELECT
+  Date,
+  DO
+FROM sonde_data 
+WHERE strftime('%m', Date) = '08' AND strftime('%d', Date) = '15'
+LIMIT 10;")
+```
+
+*dplyr*
+
+```{r sonde_data_db}
+
+sondedata_db <- tbl(con, "sonde_data")
+```
+
+```{r select_dplyr}
+
+sondedata_db %>%
+  select(Date, DO) %>%
+  collect() %>%
+  mutate(Date = as.Date(Date, format = "%Y-%m-%d")) %>% 
+  filter(month(Date) == 8 & day(Date) == 15) %>% 
+  head(n = 10)
+```
+
+We can group results based on data features that can be binned, this is particularly useful for aggregate functions. The query below extracts the minimum and maximum dissolved oxygen (DO) values for each sonde event.
+
+```{r sonde_data_grouping}
+
+sondedata_db %>%
+  select(everything()) %>%
+  group_by(sonde_event_id) %>% 
+  summarise(
+    min_DO = min(DO, na.rm = TRUE),
+    max_DO = max(DO, na.rm = TRUE)
+  ) 
+```
+
+The ability to link information in our tables is a core features of databases. We do this with **JOINs**.
+
+For example, incorporate site_id from the *sonde_events* table into a query of temperature and dissolved oxygen from *sonde_data*:
+
+```{r inner_join}
+
+sondedata_db %>% 
+  select(sonde_event_id, Temp, DO) %>% 
+  inner_join(event_db %>% select(id, site_id), by = c("sonde_event_id" = "id")) %>% 
+  select(site_id, Temp, DO) %>% 
+  head(n = 10)
+```
+
+For example, find the minimum and maximum dissolved oxgyen values for each sonde_event as per above but this time include the site and the K2_20 from the sonde_events table:
+
+```{r inner_jon_aggregation}
+
+sondedata_db %>%
+  select(everything()) %>%
+  group_by(sonde_event_id) %>% 
+  summarise(
+    min_DO = min(DO, na.rm = TRUE),
+    max_DO = max(DO, na.rm = TRUE)
+  ) %>% 
+  inner_join(event_db %>% select(id, site_id), by = c("sonde_event_id" = "id"))
+```
+
+## databases? eh, whatevs
+
+join the sonde data and sonde events data using the sonde_event_id:
+
+```{r join_with_key, message=FALSE}
+
+read_csv('~/localRepos/databases/data/sonde_data_1_3.csv') %>% 
+  select(-id) %>% 
+  inner_join(read_csv('~/localRepos/databases/data/sonde_events.csv') %>% select(-date), by = c("sonde_event_id" = "id")) %>% 
+  View("joinWithKey")
+```
+
+further, we do not really need a key, but we need to store more information in our tables without it:
+
+```{r join_sans_key, message=FALSE}
+
+read_csv('~/localRepos/databases/data/sonde_data_1_3.csv') %>% 
+  mutate(
+    site_id = case_when(sonde_event_id == 1 ~ 'GB',
+                        sonde_event_id == 2 ~ 'GB',
+                        sonde_event_id == 3 ~ 'SC'),
+    instrument_id = case_when(sonde_event_id == 1 ~ 'black',
+                              sonde_event_id == 2 ~ 'red',
+                              sonde_event_id == 3 ~ 'green')
+  ) %>% 
+  select(-id) %>% 
+  inner_join(read_csv('~/localRepos/databases/data/sonde_events.csv') %>% select(-date), by = c("site_id", "instrument_id")) %>% 
+  View('joinSansKey')
+```
+

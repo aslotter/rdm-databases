@@ -224,5 +224,5 @@ a select statement. The structure looks something like this:
     ) AS subquery ON (subquery.some_id = tbl1.some_id)
     GROUP BY tbl1.groupingvar;
 
-**logistics**: submit the required materials to your forked GitHub
-resository for this assignment (via invitation) by 2017-02-27 17:00.
+**logistics**: submit the required materials to your course GitHub
+resository for this assignment (via invitation) by 2018-04-27.
