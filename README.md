@@ -195,7 +195,7 @@ analyses.
 
 Your submission should include the following components:
 
-1.  in a single text file (not a Word doc, please):
+1.  in a single markdown (md) file:
     -   create table statement generating a table to house the
         barometric pressure data
     -   select statement that yields the sampling site and *average*
@@ -225,4 +225,4 @@ a select statement. The structure looks something like this:
     GROUP BY tbl1.groupingvar;
 
 **logistics**: submit the required materials to your course GitHub
-resository for this assignment (via invitation) by 2018-04-27.
+resository by 2018-04-27.
