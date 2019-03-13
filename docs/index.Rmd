@@ -2,10 +2,11 @@
 title: "an introduction to databases"
 subtitle: false
 author: false
-date: "2018-04-13"
+date: "2019-03-15"
 output:
   xaringan::moon_reader:
     lib_dir: libs
+    css: ["default", "assets/my-theme.css", "libs/remark-css/default-fonts.css"]
     nature:
       highlightStyle: github
       highlightLines: true
@@ -53,7 +54,7 @@ options(htmltools.dir.version = FALSE)
 - SQL (Structured Query Language): language designed to interact with RDBMS
 
 .center[
-![sql](images/SQL-CASE-WHEN-2.png)
+![sql](assets/figures/SQL-CASE-WHEN-2.png)
 ]
 
 .footnote[http://razorsql.com]
@@ -96,7 +97,7 @@ options(htmltools.dir.version = FALSE)
 
 <br>
 .center[
-  ![tr_PP](images/tableStructure.png)
+  ![tr_PP](assets/figures/tableStructure.png)
 ]
 
 .footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
@@ -106,7 +107,7 @@ options(htmltools.dir.version = FALSE)
 #### database structure (schema)
 
 .center[
-  <img src="images/entity-relationship-diagram.png" width="90%">
+  <img src="assets/figures/entity-relationship-diagram.png" width="90%">
 ]
 
 .footnote[Hand-crafted relational databases for fun and science, Naupaka Zimmerman, Data Carpentry, 2016-12-05]
@@ -133,61 +134,90 @@ options(htmltools.dir.version = FALSE)
 #### Sycamore Creek
 
 .center[
-  ![tres_rios_db_structure](images/sycamore-creek-bkgd.png)
+  <img src="assets/figures/sycamore-creek - overview.png">
 ]
+
+
+---
+
+#### Sycamore Creek
+
+.center[
+  <img src="assets/figures/sycamore-creek - space only.png">
+]
+
 
 ---
 
 #### sample sonde data
 
-.center[
-  <img src="images/example-sonde-data.png" width="70%">
+.less-left[
+  <img src="assets/figures/800w_600h-HL7-HydrolabWaterQualitySonde.jpg" width="100%">
 ]
+
+.more-right[
+  <img src="assets/figures/example-sonde-data.png" width="110%">
+]
+
+
 
 ---
 
-#### Sycamore Creek: sonde data
+#### Sycamore Creek
 
 .center[
-  ![tres_rios_db_structure](images/sycamore-creek-sonde-data.png)
+  <img src="assets/figures/sycamore-creek - space_sonde.png">
 ]
+
 
 ---
 
-#### Sycamore Creek: many variables
+#### Sycamore Creek
 
 .center[
-  ![tres_rios_db_structure](images/sycamore-creek-multivariate.png)
+  <img src="assets/figures/sycamore-creek - space_time.png">
 ]
+
+
+---
+
+#### Sycamore Creek
+
+.center[
+  <img src="assets/figures/sycamore-creek - space_time_scope.png">
+]
+
+
 ---
 
 #### Tres Rios Wetlands
 
 .center[
-  <img src="images/tres-rios-site-mao.png" width="45%">
+  <img src="assets/figures/tres-rios-site-mao.png" width="45%">
 ]
+
 
 ---
 
 #### Tres Rios raw data
 
 <small>primary production</small>
-![tr_plants](images/tr_plants.png)
+![tr_plants](assets/figures/tr_plants.png)
 
 <hr>
 <small>transpiration</small>
-![tr_PP](images/tr_primary_pro.png)
+![tr_PP](assets/figures/tr_primary_pro.png)
 
 <hr>
 <small>water quality</small>
-![tr_water_qual](images/tr_water_qual.png)
+![tr_water_qual](assets/figures/tr_water_qual.png)
 
 ---
 
 #### Tres Rios database schema
 
 .center[
-  <img src="images/tres_rios_db_structure.png" width="90%">
+  <img src="assets/figures/tres_rios_db_structure.png" width="90%">
 ]
 
 ---
@@ -195,7 +225,7 @@ options(htmltools.dir.version = FALSE)
 #### Tres Rios database schema: water quality
 
 .center[
-  ![tres_rios_db_structure](images/simple_tres_rios_db_structure-water-quality.png)
+  ![tres_rios_db_structure](assets/figures/simple_tres_rios_db_structure-water-quality.png)
 ]
 
 ---
@@ -203,6 +233,6 @@ options(htmltools.dir.version = FALSE)
 #### McDowell Sonoran Preserve arthropod taxonomy
 
 .center[
-  ![tres_rios_db_structure](images/arthropod-taxonomy.png)
+  ![tres_rios_db_structure](assets/figures/arthropod-taxonomy.png)
 ]
 
