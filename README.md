@@ -77,7 +77,7 @@ Import ```sonde_data_1_3.csv``` using the import tool. Name the table _tempTable
 Repeat this step for ```sonde_data_4.csv``` using the same table name (_tempTable_)
 \- DB Browser will indicate that this table already exists and prompt you as to
 whether you want to import the data into the existing table: Yes. Data for
-sonde events 1-4 should now be in our database table titled _temporary_; you
+sonde events 1-4 should now be in our database table titled _tempTable_; you
 can view the data in the _Browse Data_ tab.
 
 To copy the sonde data from our temporary table into the _sonde data_ table, we
@@ -96,13 +96,30 @@ Our FOREIGN KEY references the id field in our sonde\_events table. Try
 uploading ```sonde_data_5.csv```, which is a fifth sampling event but one that is
 not included in our sonde\_events table, using the aforementioned steps.
 
-Add a fifth event to the _sonde\_events_ table and try again.
+Add a fifth event to the _sonde\_events_ table then try again. We can use DB
+Browser's _New Record_ tool and _Browse Data_ interface to add a new record and
+to populate it with data, but far preferable and amenable to a reproducible
+workflow is to address this with a script like the one below.
+
+```sql
+INSERT INTO sonde_events (
+  site_id,
+  date,
+  instrument_id,
+  K2_20
+)
+VALUES (
+  "new site",
+  "2019-03-15",
+  "yellow",
+  60.25
+);
+```
 
 ### getting data out of the database
 
-We use **SELECT** statements to extract data from the tables. An
-asterisk is a wild card that instructs the query to pull data from all
-columns.
+We use **SELECT** statements to extract data from the tables. An asterisk is a
+wild card that instructs the query to pull data from all columns.
 
 ```sql 
 SELECT * 
@@ -156,9 +173,9 @@ JOIN sonde_events ON (sonde_events.id = sonde_data.sonde_event_id)
 WHERE sonde_events.id = 1;
 ```
 
-For example, find the minimum and maximum dissolved oxgyen values for each
-sonde\_event as per above but this time include the site and the K2\_20 from
-the sonde\_events table:
+For example, find the minimum and maximum dissolved oxygen values for each
+sonde\_event as per above but this time include the site and the K2\_20 from the
+sonde\_events table:
 
 ```sql 
 SELECT
@@ -176,8 +193,7 @@ assignment
 ----------
 
 Barometric pressure has a considerable influence on dissolved oxygen
-concentrations in aquatic systems. We will need these data for our
-analyses.
+concentrations in aquatic systems. We will need these data for our analyses.
 
 -   create a table in your database to house barometric pressure data
     corresponding to each sonde event. Note that the date and time are
@@ -205,10 +221,10 @@ Your submission should include the following components:
 
 **Bonus submission:**
 
-If you want to take it a bit further, generate a query that will produce
-the minium and maximum dissolved oxygen values, and the average
-barometric pressure for each sonde event. Hint: this requires a join on
-a select statement. The structure looks something like this:
+If you want to take it a bit further, generate a query that will produce the
+minium and maximum dissolved oxygen values, and the average barometric pressure
+for each sonde event. Hint: this requires a join on a select statement. The
+structure looks something like this:
 
     SELECT
       tbl1.field1,
@@ -224,5 +240,5 @@ a select statement. The structure looks something like this:
     ) AS subquery ON (subquery.some_id = tbl1.some_id)
     GROUP BY tbl1.groupingvar;
 
-**logistics**: submit the required materials to your course GitHub
-resository by 2018-04-27.
+**logistics**: submit the required materials to your course GitHub resository by
+2019-03-29.
