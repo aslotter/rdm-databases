@@ -1,5 +1,14 @@
-introduction to databases
--------------------------
+## introduction to databases
+
+### navigation
+
+- [background](https://github.com/SOS598-RDM/rdm-databases#background)
+- [create the database](https://github.com/SOS598-RDM/rdm-databases#create-the-database)
+- [create the tables](https://github.com/SOS598-RDM/rdm-databases#create-the-tables)
+- [load data](https://github.com/SOS598-RDM/rdm-databases#load-data-into-the-database)
+- [harvesting data](https://github.com/SOS598-RDM/rdm-databases#getting-data-out-of-the-database)
+- [assignment](https://github.com/SOS598-RDM/rdm-databases#assignment)
+
 
 ### background
 
@@ -16,25 +25,28 @@ We will use SQLite as our database platform, and [DB Browser for
 SQLite](http://sqlitebrowser.org/) as a GUI interface to our
 database.
 
+
 ### create the database
 
 Creata a new database titled _stream-metabolism_. Upon creating the database,
 DB Browser will start with a _Edit table definition_ dialog box. Cancel this
 for now.
 
-Before we begin working with our database, we need to indicate that our
-database should recognize foreign keys. From the _Edit Pragmas_ tab, check the
-_Foreign Keys_ option box, then hit _Save_. We will use the defaults for all
-other settings.
+Before we begin working with our database, we need to indicate that our database
+should recognize foreign keys (note that recognizing foreign keys may be the
+default option in newer versions of DB Browser). From the _Edit Pragmas_ tab,
+check the _Foreign Keys_ option box, then hit _Save_. We will use the defaults
+for all other settings.
+
 
 ### create the tables
 
 Use the DB Browser import tool to create the sonde\_events table by importing
 the data: **File** > **Import** > **Table from CSV file...** Navigate to the
-```sonde_events.csv``` file and hit _Open_. You should see the file contents in the
+`sonde_events.csv` file and hit _Open_. You should see the file contents in the
 _Import CSV file_ dialog box; name the table 'sonde\_events'. Once created, use
-the _Modify Table_ tool to change (1) the id field to Type INTEGER, and check the
-Not null, PK (primary key), AI (autoincrement), and U (unique) option boxes,
+the _Modify Table_ tool to change (1) the id field to Type INTEGER, and check
+the Not null, PK (primary key), AI (autoincrement), and U (unique) option boxes,
 and (2) the K2\_20 field to Type NUMERIC.
 
 Creating the sonde\_data table is more complicated because we need to add a
@@ -56,6 +68,7 @@ CREATE TABLE "sonde_data" (
 
 Copy the statement above into the dialog box on the _Execute SQL_ tab, and hit
 the play button to execute the command.
+
 
 ### load data into the database
 
@@ -89,7 +102,6 @@ will accomplish this task.
 INSERT INTO sonde_data(sonde_event_id, Date, Time, Temp, SpCond, DO) SELECT
 sonde_event_id, Date, Time, Temp, SpCond, DO FROM tempTable;
 ```
-
 Now we can delete our _tempTable_.
 
 Our FOREIGN KEY references the id field in our sonde\_events table. Try
@@ -133,7 +145,6 @@ SELECT
   Date 
 FROM sonde_data;
 ```
-
 Usually we want to use certain search criteria:
 
 ```sql 
@@ -143,7 +154,6 @@ SELECT
 FROM sonde_data 
 WHERE strftime('%m', Date) = '08' AND strftime('%d', Date) = '15';
 ```
-
 We can group results based on data features that can be binned, this is
 particularly useful for aggregate functions. The query below extracts the
 minimum and maximum dissolved oxygen (DO) values for each sonde\_event.
@@ -172,7 +182,6 @@ FROM sonde_data
 JOIN sonde_events ON (sonde_events.id = sonde_data.sonde_event_id)
 WHERE sonde_events.id = 1;
 ```
-
 For example, find the minimum and maximum dissolved oxygen values for each
 sonde\_event as per above but this time include the site and the K2\_20 from the
 sonde\_events table:
@@ -189,8 +198,7 @@ JOIN sonde_events ON (sonde_events.id = sonde_data.sonde_event_id)
 GROUP BY sonde_events.id;
 ```
 
-assignment
-----------
+## assignment
 
 Barometric pressure has a considerable influence on dissolved oxygen
 concentrations in aquatic systems. We will need these data for our analyses.
