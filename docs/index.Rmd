@@ -19,11 +19,11 @@ options(htmltools.dir.version = FALSE)
 
 #### objectives
 
-< 1. a practical introduction to databases
+* a practical introduction to databases
 
-< 1. demystify databases
+* demystify databases
 
-~ 1. data structure 
+* focus on data structure 
 
 ---
 
@@ -33,7 +33,7 @@ options(htmltools.dir.version = FALSE)
 
 - database management system (DBMS) is software that allows interacting with the database (e.g., storing, retrieving, updating data)
 
-.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+.footnote[[BST 260: Introduction to Data Science](https://datasciencelabs.github.io/)]
 
 ---
 
@@ -45,7 +45,7 @@ options(htmltools.dir.version = FALSE)
 
 - RDBMS = R + DBMS
 
-.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+.footnote[[BST 260: Introduction to Data Science](https://datasciencelabs.github.io/)]
 
 ---
 
@@ -54,7 +54,7 @@ options(htmltools.dir.version = FALSE)
 - SQL (Structured Query Language): language designed to interact with RDBMS
 
 .center[
-![sql](assets/figures/SQL-CASE-WHEN-2.png)
+  ![sql](assets/figures/SQL-CASE-WHEN-2.png)
 ]
 
 .footnote[http://razorsql.com]
@@ -73,7 +73,7 @@ options(htmltools.dir.version = FALSE)
   + SQLite
   + ...
   
-.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+.footnote[[BST 260: Introduction to Data Science](https://datasciencelabs.github.io/)]
 
 ---
 
@@ -87,20 +87,44 @@ options(htmltools.dir.version = FALSE)
 
 - used in most web browsers and mail clients
 
-- all the required tools are included in dplyr
+- consistent with generaly database functionality
 
-.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+.footnote[[BST 260: Introduction to Data Science](https://datasciencelabs.github.io/)]
 
 ---
 
 #### database table structure
 
 <br>
+
 .center[
   ![tr_PP](assets/figures/tableStructure.png)
 ]
 
-.footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+.footnote[[BST 260: Introduction to Data Science](https://datasciencelabs.github.io/)]
+
+
+---
+
+#### database table structure: keys
+
+<br>
+
+.center[
+  <img src="assets/figures/foreignkey.jpg" width="100%">
+]
+
+.footnote[[Foreign Keys - Intro to Relational Databases (Udacity)](https://www.youtube.com/watch?reload=9&v=fnbLMcd0FGQ)]
+
+
+---
+
+#### McDowell Sonoran Preserve arthropod taxonomy
+
+.center[
+  ![tres_rios_db_structure](assets/figures/arthropod-taxonomy.png)
+]
+
 
 ---
 
@@ -111,6 +135,7 @@ options(htmltools.dir.version = FALSE)
 ]
 
 .footnote[Hand-crafted relational databases for fun and science, Naupaka Zimmerman, Data Carpentry, 2016-12-05]
+
 
 ---
 
@@ -128,6 +153,7 @@ options(htmltools.dir.version = FALSE)
 
 
 .footnote[Introduction to Data Science: BIO 260 and CSCI E107, Harvard T.H. Chan School of Public Health]
+
 
 ---
 
@@ -226,13 +252,5 @@ options(htmltools.dir.version = FALSE)
 
 .center[
   ![tres_rios_db_structure](assets/figures/simple_tres_rios_db_structure-water-quality.png)
-]
-
----
-
-#### McDowell Sonoran Preserve arthropod taxonomy
-
-.center[
-  ![tres_rios_db_structure](assets/figures/arthropod-taxonomy.png)
 ]
 
