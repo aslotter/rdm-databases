@@ -65,7 +65,7 @@ add sonde events data
 ```{r dbi::load_sonde_events, results='hide'}
 
 # load data; SQLite does not have a type DATE so convert to character
-sondeEvents <- read_csv('~/localRepos/databases/data/sonde_events.csv') %>% 
+sondeEvents <- read_csv('data/sonde_events.csv') %>% 
   mutate(date = as.character(date))
 
 # write the events to a temporary table
@@ -150,8 +150,8 @@ use the script to load sonde event data 1 through 4:
 ```{r dbi::load_sonde_data_1_4}
 
 # list data resources to load
-dataFiles <- list('~/localRepos/databases/data/sonde_data_1_3.csv',
-                  '~/localRepos/databases/data/sonde_data_4.csv')
+dataFiles <- list('data/sonde_data_1_3.csv',
+                  'data/sonde_data_4.csv')
 
 # use the tempTableData function to load the data
 lapply(dataFiles, tempTableData, overWrite = FALSE)
@@ -201,7 +201,7 @@ Now that there is an event 5 in our *sonde_events* table, we can add data from s
 
 ```{r dbi::load_sonde_data_5}
 
-dataFiles <- list('~/localRepos/databases/data/sonde_data_5.csv')
+dataFiles <- list('data/sonde_data_5.csv')
 
 lapply(dataFiles, tempTableData, overWrite = TRUE)
 ```
@@ -351,9 +351,9 @@ join the sonde data and sonde events data using the sonde_event_id:
 
 ```{r join_with_key, message=FALSE}
 
-read_csv('~/localRepos/databases/data/sonde_data_1_3.csv') %>% 
+read_csv('data/sonde_data_1_3.csv') %>% 
   select(-id) %>% 
-  inner_join(read_csv('~/localRepos/databases/data/sonde_events.csv') %>% select(-date), by = c("sonde_event_id" = "id")) %>% 
+  inner_join(read_csv('data/sonde_events.csv') %>% select(-date), by = c("sonde_event_id" = "id")) %>% 
   View("joinWithKey")
 ```
 
@@ -361,7 +361,7 @@ further, we do not really need a key, but we need to store more information in o
 
 ```{r join_sans_key, message=FALSE}
 
-read_csv('~/localRepos/databases/data/sonde_data_1_3.csv') %>% 
+read_csv('data/sonde_data_1_3.csv') %>% 
   mutate(
     site_id = case_when(sonde_event_id == 1 ~ 'GB',
                         sonde_event_id == 2 ~ 'GB',
@@ -371,7 +371,7 @@ read_csv('~/localRepos/databases/data/sonde_data_1_3.csv') %>%
                               sonde_event_id == 3 ~ 'green')
   ) %>% 
   select(-id) %>% 
-  inner_join(read_csv('~/localRepos/databases/data/sonde_events.csv') %>% select(-date), by = c("site_id", "instrument_id")) %>% 
+  inner_join(read_csv('data/sonde_events.csv') %>% select(-date), by = c("site_id", "instrument_id")) %>% 
   View('joinSansKey')
 ```
 
